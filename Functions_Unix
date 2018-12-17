@@ -1,0 +1,49 @@
+#/***********************************************************************
+# * Author  : Shobhit Srivastava
+# * Purpose : This script is to understand how the functions work in UNIX
+# *           and how to integrate them with other commands and prompts
+#***********************************************************************/
+#!/bin/bash
+
+getname()
+{
+        local fname;
+        read -p "Enter a file name : " fname
+
+        until echo $fname|grep '^[A-Za-z]\w*$' >/dev/null 2>&1
+        do
+                read -p "Invalid File name enter another filename : " fname
+        done
+        echo $fname
+}
+vfile()
+{
+        local var=$(getname)
+        if [ -r $var ] && [ -f $var ]
+        then
+                if [ ! -L $var ]
+                then
+                        echo $var
+                        return 0
+                else
+                        echo $var
+                        return 1
+                fi
+        else
+                return 2
+        fi
+}
+Backup()
+{
+        alias tstamp='date +%Y%j%H%M%S'
+        local var=$(vfile)
+        if [ $? -eq 0 ]
+        then
+                cp -i "$var" /$HOME/Backup/$(echo $var|sed "s/.*\///").$(tstamp)
+        elif [ $? -eq 1 ]
+        then
+                cp -P "$var" /$HOME/Backup/$(echo $var|sed "s/.*\///").$(tstamp)
+        else
+                echo "Invalid filename"
+        fi
+}
