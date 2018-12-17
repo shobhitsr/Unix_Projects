@@ -1,0 +1,55 @@
+#!/bin/bash
+#/**********************************************************************
+# * Author : Shobhit Srivastava
+# * Purpose : A shell script to restore files to the current
+#		      	  directory and purge the output  from the backup
+#		      		folder
+#**********************************************************************/
+restore() #funtion to restore the file to the current directory
+{
+	filename=${1%.*} # string manuplation to remove the time stamp from the file name
+
+	if [ -L "$path" ] #Cheching if the path is a symbolic link or not
+	then
+        	cp -P ~/Backup/$1 $PWD/$filename >/dev/null 2>&1 # if a symbolic link
+	else
+        	cp -i ~/Backup/$1 $PWD/$filename >/dev/null 2>&1 # if not a symbolic link
+	fi
+}
+
+if [ $# -gt 0 ] #checking for a valid input
+then
+	restore "$1" #if the input argument is valid then restore the file
+	select path in ` ls ~/Backup/$1* | sed "s#^.*/##" ` quit
+	do
+		if [ "$path" == "quit" ] #checks for the exit condition
+                then
+                        break
+		  else
+                        if [ "${0##*/}" == "Purge" ] #string manupulation to to get the link name and check if it matches
+                        then
+                                rm $path #removes the file name entered
+                                echo "File Purged"
+                        else
+                                restore $path #restore the path
+                        fi
+                fi
+        done
+else
+	echo "Choose a filename : "
+	select path in ` ls ~/Backup/* | sed "s#^.*/##" ` quit
+	do
+        	if [ "$path" == "quit" ] #checks for the exit condition
+	        then
+        	        break
+	        else
+			if [ "${0##*/}" == "Purge" ] #string manupulation to to get the link name and check if it matches
+			then
+				rm $path #removes the file name entered
+				echo "File Purged"
+			else
+				restore $path #restore the path
+			fi
+		fi
+	done
+fi
