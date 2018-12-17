@@ -1,0 +1,38 @@
+#/******************************************************************
+# * Programer : Shobhit Srivastava
+# * Purpose :Using grep statements to get the specific words
+# * 		     for the given regular expression constraints.
+#******************************************************************/
+words1=/usr/share/dict/words
+words2=~berezin/Data/cracklib-small
+
+#2. Find any words with two digits in them.
+	grep -E '[0-9][0-9]' $words1 $words2 > gout.02
+#4. Find any words with duplicate letters next to each other.
+	grep -E '([[:alnum:]])\1+' $words1 $words2 > gout.04
+#7. Find any words with three duplicate letters next to each other.
+	grep -E '([[:alnum:]])\1{2}' $words1 $words2 > gout.07
+#8. Find any words with three consequetive letters repeated next to the 1st three.
+	grep -E '([[:alpha:]]{3})\1' $words1 $words2 > gout.08
+#13. Find any words with two capital letters in word but only if seperated by at least one non-cap.ed charracter.
+	grep -E '[[:upper:]][[:lower:]]+[[:upper:]]' $words1 $words2 > gout.13
+#18. Find any words longer than 6 characters.
+	grep -E '[^\ ]{6,}' $words1 $words2 > gout.18
+#21. Find any words with exactly 8 characters.
+	grep -E '^.{8}$' $words1 $words2 > gout.21
+#26. Find any word starting with capitalized F.
+	grep '\<F.*\>' $words1 $words2 > gout.26
+#27. Find any word with the 2nd letter capitalized and possibly others.
+	grep '^.[[:upper:]]' $words1 $words2 > gout.27
+#33. Find any 'line' ending with a d.
+	grep "d$" $words1 $words2 > gout.33
+#37. Find any words containing an apostrophe followed by 3 or more characters.
+	grep "'..." $words1 $words2 > gout.37
+#45. Find any words with two consequetive letters repeated elsewhere on the line, but not next to each other.
+	grep -E '([[:alpha:]]{2}).+\1' $words1 $words2 > gout.45
+#46. Find any words with two consequetive letters repeated anywhere else on the line in reverse order, but not next to each other.
+	grep -E '([[:alpha:]])([[:alpha:]]).+\2\1' $words1 $words2 > gout.46
+#48. Find any words with exactly 6 sequential alpha characters.
+	grep -E '\<[[:alpha:]]{6}\>' $words1 $words2 > gout.48
+#52. Find any word with additional characters and ending with a character other tnan an s at the end of the line.
+	grep -E '[[:punct:]]' $words1 $words2 | grep -E '[^s]$'> gout.52
