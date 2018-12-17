@@ -1,0 +1,32 @@
+
+#/**********************************************************************
+# * Author  : Shobhit Srivastava
+# * Purpose : This script is a way to learn the basic concepts of the alias
+# *           command on unix
+#**********************************************************************/
+#!/bin/bash
+shopt -s expand_aliases
+
+#1 alias for a timestamp that gives the current time:
+
+alias tstamp='date +%Y%j%H%M%S'
+
+#2 alias getname that reads the input filename:
+
+alias getname='echo "enter filename";read z1808617'
+
+#3 Alias vfile that calls the getname alias tests if its regular and readable:
+
+alias vfile='getname;(test -f $z1808617||(echo "Not a regular file"&&exit 1))&&(test -r $z1808617||(echo "Cannot read"&&exit 2))'
+
+#4 Alias backup to backup the file in a folder called backup:
+
+alias backup='vfile&&cp -i "$z1808617" /$HOME/Backup/$z1808617'
+
+#5 Alias Backup to call vfile then copy it to the backup folder with a timestamp and remove the path directory:
+
+alias Backup='vfile;cp -i "$z1808617" /$HOME/Backup/$(echo $z1808617|sed "s/.*\///").$(tstamp)'
+
+#6 Alias finder that finds a file in any directory and sends an error message to the /dev/null if file not found and displays the result:
+
+alias finder='echo "Enter directory";read var1;echo "Enter filename";read var2;(find /$HOME/$var1 -name $var2 2>/dev/null&&echo "Found")||echo "Not found"'
