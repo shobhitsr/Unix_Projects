@@ -1,0 +1,77 @@
+#!/bin/bash
+#/*********************************************************
+# * Author  : Shobhit Srivastava
+# * Purpose :To use awk and its related commands
+# *          to get the desired data from the file
+#*********************************************************/
+gawk -e '
+BEGIN{
+	#setting FS to 0
+        FS=","
+	#initializing two variables to sum the values
+        sum_check=0
+        sum_debit=0
+        split("January February March April May June July August September October November December ", months, " ")
+}
+{
+	#Checking if the 1st field is empty
+        if( $1 != "" )
+        {
+                sum_check+=$6
+        }
+        else
+        {
+                sum_debit+=$6
+        }
+
+	#initializing the variable it to zero
+	it=0
+	while(it<length(catagory))
+	{
+		#if a match to a category is found then break
+		if(catagory[it] == $4)
+			break
+		else
+			it++
+	}
+	if(it=length(catagory))
+	{
+		#add the catagory to the array
+		catagory[item]=$4
+		item++
+	}
+
+	strnum=substr($3,6,2)
+	#allocating a variable to the digits
+	Month_name=months[sprintf( "%d", strnum)]
+
+	#Calculating the expense by month
+	expense_month[Month_name] += $6
+
+	#Calculating the expense by catagory
+	expense_catagory[$4] += $6
+}
+END{
+	#printing the checks and the debits
+        print "Checks and debits"
+        printf "%-15s %8.2f\n",  "Checks : ", sum_check
+        printf "%-15s %8.2f\n", "Debits : ", sum_debit
+	print " "
+
+	n=asorti(expense_catagory, sorted)
+
+	#printing all the expenses by catagories
+	print "Expenses by catagory"
+	for(i=1;i<=n;i++)
+	{
+                printf "%-15s %8.2f\n", sorted[i], expense_catagory[sorted[i]]
+	}
+	print " "
+	#printind allthe expenses by months
+	print "Expenses by month"
+	for(i=1;i<=12;i++)
+	{
+		printf "%-15s %8.2f\n",  months[i], expense_month[months[i]]
+	}
+}
+' ~berezin/Data/bank.data
